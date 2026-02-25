@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+body {
+  background: linear-gradient(180deg, #0a0a0f 0%, #0d0d1a 30%, #0f0f1a 70%, #080810 100%);
+  min-height: 100vh;
+  background-attachment: fixed;
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-card:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-color: rgba(212, 165, 116, 0.4);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(212, 165, 116, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.glass-modal {
+  background: linear-gradient(160deg, rgba(30, 30, 50, 0.95) 0%, rgba(15, 15, 25, 0.98) 100%);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 
+    0 25px 80px rgba(0, 0, 0, 0.6),
+    0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.ingredient-tag {
+  @apply px-3 py-1.5 rounded-full text-sm transition-all duration-200 cursor-pointer;
+}
+
+.ingredient-tag.selected {
+  @apply bg-bar-amber text-bar-dark font-medium;
+  box-shadow: 0 0 20px rgba(212, 165, 116, 0.4);
+}
+
+.ingredient-tag:not(.selected) {
+  @apply bg-white/10 text-white/70 hover:bg-white/20;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cocktail-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.cocktail-card:hover {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-color: rgba(212, 165, 116, 0.35);
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(212, 165, 116, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.cocktail-card {
+  @apply rounded-2xl overflow-hidden cursor-pointer transition-all duration-300;
+}
+
+.cocktail-card:hover {
+  transform: scale(1.02);
+}
+
+.modal-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+}
+
+.modal-content {
+  @apply rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 165, 116, 0.4);
+  border-radius: 3px;
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.glow-amber {
+  box-shadow: 0 0 30px rgba(212, 165, 116, 0.3);
+}
+
+.glow-purple {
+  box-shadow: 0 0 30px rgba(155, 89, 182, 0.3);
+}
+
+.glow-pink {
+  box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
+}

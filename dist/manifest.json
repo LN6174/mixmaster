@@ -1,0 +1,38 @@
+{
+  "name": "MixMaster - 家调鸡尾酒",
+  "short_name": "MixMaster",
+  "description": "根据家中现有材料，发现专属鸡尾酒",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f1a",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "lifestyle"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "我的酒柜",
+      "url": "/?cabinet=true",
+      "description": "查看我的收藏材料"
+    },
+    {
+      "name": "随机摇一摇",
+      "url": "/?random=true",
+      "description": "随机发现鸡尾酒"
+    }
+  ]
+}
