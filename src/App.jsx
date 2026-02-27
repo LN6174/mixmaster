@@ -4,12 +4,13 @@ import { ingredients, cocktails } from './data/mockData';
 import { 
   Search, GlassWater, X, Plus, Trash2, Heart, 
   ChefHat, Clock, Sparkles, ChevronDown, ChevronUp, 
-  Shuffle, Scale
+  Shuffle, Scale, Filter, RotateCcw
 } from 'lucide-react';
 import { getIngredientName } from './data/mockData';
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState('基酒');
   const [isShaking, setIsShaking] = useState(false);
   
@@ -27,6 +28,10 @@ function App() {
     openModal,
     getFilteredCocktails,
     getDailyRecommendations,
+    filters,
+    setFilter,
+    clearFilters,
+    getShoppingSuggestions,
   } = useStore();
 
   const filteredCocktails = getFilteredCocktails().filter(c => 
@@ -74,6 +79,13 @@ function App() {
                 />
               </div>
             </div>
+            
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`p-2 rounded-xl transition-colors ${showFilters ? 'bg-bar-amber text-bar-dark' : 'bg-white/10 hover:bg-white/20'}`}
+            >
+              <Filter className="w-5 h-5" />
+            </button>
             
             <button
               onClick={toggleCabinet}
@@ -126,6 +138,94 @@ function App() {
                     isFavorite={favorites.includes(cocktail.id)}
                   />
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Filters Panel */}
+          {showFilters && (
+            <div className="glass-card rounded-2xl p-4 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-medium flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-bar-amber" />
+                  筛选
+                </h3>
+                <button
+                  onClick={clearFilters}
+                  className="text-xs text-white/50 hover:text-bar-amber flex items-center gap-1"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  重置
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                {/* Difficulty Filter */}
+                <div>
+                  <span className="text-sm text-white/60 mb-2 block">难度</span>
+                  <div className="flex flex-wrap gap-2">
+                    {['⭐', '⭐⭐', '⭐⭐⭐'].map((diff) => (
+                      <button
+                        key={diff}
+                        onClick={() => setFilter('difficulty', filters.difficulty === diff ? null : diff)}
+                        className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                          filters.difficulty === diff 
+                            ? 'bg-bar-amber text-bar-dark' 
+                            : 'bg-white/10 hover:bg-white/20'
+                        }`}
+                      >
+                        {diff}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Base Spirit Filter */}
+                <div>
+                  <span className="text-sm text-white/60 mb-2 block">基酒</span>
+                  <div className="flex flex-wrap gap-2">
+                    {['whiskey', 'vodka', 'gin', 'rum', 'tequila'].map((spirit) => {
+                      const ing = ingredients.find(i => i.id === spirit);
+                      return (
+                        <button
+                          key={spirit}
+                          onClick={() => setFilter('baseSpirit', filters.baseSpirit === spirit ? null : spirit)}
+                          className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                            filters.baseSpirit === spirit 
+                              ? 'bg-bar-amber text-bar-dark' 
+                              : 'bg-white/10 hover:bg-white/20'
+                          }`}
+                        >
+                          {ing?.icon} {ing?.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Shopping Suggestions */}
+          {allUserIngredients.length > 0 && getShoppingSuggestions().length > 0 && (
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 text-bar-neon" />
+                <span className="font-medium">购买了这些可以做更多</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {getShoppingSuggestions().map((suggestion) => {
+                  const ing = ingredients.find(i => i.id === suggestion.id);
+                  return (
+                    <button
+                      key={suggestion.id}
+                      onClick={() => toggleIngredient(suggestion.id)}
+                      className="px-3 py-1.5 bg-bar-purple/20 text-bar-purple rounded-lg text-sm hover:bg-bar-purple/30 transition-colors"
+                    >
+                      {ing?.icon} {ing?.name}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -363,12 +463,13 @@ function AddIngredientForm({ onAdd }) {
 }
 
 function CocktailModal() {
-  const { isModalOpen, selectedCocktail, closeModal, toggleFavorite, favorites } = useStore();
+  const { isModalOpen, selectedCocktail, closeModal, toggleFavorite, favorites, getSimilarCocktails } = useStore();
   const [useMetric, setUseMetric] = useState(false);
   
   if (!isModalOpen || !selectedCocktail) return null;
   
   const isFavorite = favorites.includes(selectedCocktail.id);
+  const similarCocktails = getSimilarCocktails(selectedCocktail.id, 3);
 
   const convertAmount = (amount) => {
     if (!useMetric) return amount;
@@ -473,6 +574,35 @@ function CocktailModal() {
               ))}
             </div>
           </div>
+
+          {/* Similar Cocktails */}
+          {similarCocktails.length > 0 && (
+            <div className="mb-4">
+              <h3 className="font-medium mb-3 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-bar-neon" />
+                相似推荐
+              </h3>
+              <div className="grid grid-cols-3 gap-2">
+                {similarCocktails.map((cocktail) => (
+                  <div
+                    key={cocktail.id}
+                    onClick={() => {
+                      closeModal();
+                      setTimeout(() => openModal(cocktail), 100);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <img
+                      src={cocktail.image}
+                      alt={cocktail.name}
+                      className="w-full h-16 object-cover rounded-lg mb-1"
+                    />
+                    <p className="text-xs text-center truncate">{cocktail.name}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
